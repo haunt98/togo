@@ -18,8 +18,21 @@ func (t *Transport) ServeHTTP(rsp http.ResponseWriter, req *http.Request) {
 		t.userTransport.Login(rsp, req)
 		return
 	case "/tasks":
-		t.taskTransport.ServeHTTP(rsp, req)
-		return
+		newReq, ok := t.userTransport.ValidateToken(rsp, req)
+		if !ok {
+			return
+		}
+
+		switch req.Method {
+		case http.MethodGet:
+			t.taskTransport.List(rsp, newReq)
+			return
+		case http.MethodPost:
+			t.taskTransport.Add(rsp, newReq)
+			return
+		default:
+			// TODO: return unimplement
+		}
 	default:
 		// TODO: return unimplement
 		return
