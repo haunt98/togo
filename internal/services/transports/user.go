@@ -11,9 +11,8 @@ import (
 )
 
 const (
-	userIDField   = "user_id"
-	passwordField = "password"
-
+	userIDField         = "user_id"
+	passwordField       = "password"
 	authorizationHeader = "Authorization"
 )
 
@@ -45,7 +44,7 @@ func (t *UserTransport) Login(rsp http.ResponseWriter, req *http.Request) {
 	token, err := t.tokenGenerator.CreateToken(userID)
 	if err != nil {
 		log.Printf("failed to create token: %s", err)
-		makeJSONResponse(rsp, http.StatusInternalServerError, nil, incorrectLoginError)
+		makeJSONResponse(rsp, http.StatusInternalServerError, nil, err)
 	}
 
 	makeJSONResponse(rsp, http.StatusOK, token, nil)
