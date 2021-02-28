@@ -15,9 +15,11 @@ func (t *Transport) ServeHTTP(rsp http.ResponseWriter, req *http.Request) {
 
 	switch req.URL.Path {
 	case "/login":
-		return t.TaskTransport.ServeHTTP(rsp, req)
+		t.userTransport.Login(rsp, req)
+		return
 	case "/tasks":
-		return t.userTransport.ServeHTTP(rsp, req)
+		t.taskTransport.ServeHTTP(rsp, req)
+		return
 	default:
 		// TODO: return unimplement
 		return
