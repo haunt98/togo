@@ -5,8 +5,12 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/haunt98/togo/internal/services"
-	sqllite "github.com/haunt98/togo/internal/storages/sqlite"
+	"github.com/haunt98/togo/internal/pkg/clock"
+	"github.com/haunt98/togo/internal/pkg/uuid"
+	"github.com/haunt98/togo/internal/services/transports"
+	"github.com/haunt98/togo/internal/services/usecases"
+	"github.com/haunt98/togo/internal/storages"
+	"github.com/haunt98/togo/internal/token/jwt"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -17,11 +21,17 @@ func main() {
 	}
 
 	// Storage layer
+	taskStorage := storages.NewTaskDB(db)
+	userStorage := storages.NewUserDB(db)
 
-	http.ListenAndServe(":5050", &services.ToDoService{
-		JWTKey: "wqGyEBBfPK9w3Lxw",
-		Store: &sqllite.LiteDB{
-			DB: db,
-		},
-	})
+	// Use case layer
+	taskUseCase := usecases.NewTaskUseCase(taskStorage, uuid.Generate, clock.Now)
+	userUseCase := usecases.NewUserUseCase(userStorage)
+
+	// Transport layer
+	taskTransport := transports.NewTaskTransport(taskUseCase)
+	userTransport := transports.NewUserTransport(userUseCase, jwt.NewGenerator("wqGyEBBfPK9w3Lxw"))
+	transport := transports.NewTransport(taskTransport, userTransport)
+
+	http.ListenAndServe(":8080", transport)
 }
