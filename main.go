@@ -16,6 +16,8 @@ func main() {
 		log.Fatal("error opening db", err)
 	}
 
+	// Storage layer
+
 	http.ListenAndServe(":5050", &services.ToDoService{
 		JWTKey: "wqGyEBBfPK9w3Lxw",
 		Store: &sqllite.LiteDB{
