@@ -3,7 +3,7 @@ service:
 
 database:
   dialect: postgres
-  connection: postgres://postgres:1234@localhost/togodb
+  connection: postgres://postgres:1234@localhost/togodb?sslmode=disable
 
 jwt:
   key: abcdef
