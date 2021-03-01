@@ -21,7 +21,7 @@ import (
 
 const (
 	postgresDialect = "postgres"
-	sqliteDialect   = "sqlite"
+	sqliteDialect   = "sqlite3"
 )
 
 func main() {

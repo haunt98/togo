@@ -4,6 +4,8 @@ service:
 database:
   dialect: postgres
   connection: "user=postgres password=1234 dbname=togodb sslmode=disable"
+  # dialect: sqlite3
+  # connection: "./data.db"
 
 jwt:
   key: abcdef
