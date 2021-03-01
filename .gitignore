@@ -15,3 +15,8 @@
 # vendor/
 
 out/
+
+# Unwanted node
+node_modules/
+package.json
+package-lock.json
