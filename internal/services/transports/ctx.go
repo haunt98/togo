@@ -5,7 +5,7 @@ import (
 	"errors"
 )
 
-const (
+var (
 	getUserIDFromCtxError = errors.New("failed to get userID from ctx")
 )
 

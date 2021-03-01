@@ -10,12 +10,6 @@ import (
 	"github.com/haunt98/togo/internal/token"
 )
 
-const (
-	userIDField         = "user_id"
-	passwordField       = "password"
-	authorizationHeader = "Authorization"
-)
-
 var (
 	incorrectLoginError          = errors.New("incorrect user_id/pwd")
 	incorerectAuthorizationError = errors.New("incorerect authorization")

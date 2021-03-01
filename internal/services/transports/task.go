@@ -1,22 +1,20 @@
 package transports
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
 
 	"github.com/haunt98/togo/internal/services/usecases"
-)
-
-const (
-	createdDateField = "created_date"
+	"github.com/haunt98/togo/internal/storages"
 )
 
 type TaskTransport struct {
 	taskUseCase usecases.TaskUseCase
 }
 
-func (t *TaskTransport) List(rsp http.ResponseWriter, req *http.Request) {
-	userID, err := getUserIDFromCtx(req.Context)
+func (t *TaskTransport) ListTasks(rsp http.ResponseWriter, req *http.Request) {
+	userID, err := getUserIDFromCtx(req.Context())
 	if err != nil {
 		makeJSONResponse(rsp, http.StatusInternalServerError, nil, err)
 		return
@@ -28,7 +26,7 @@ func (t *TaskTransport) List(rsp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	tasks, err := t.taskUseCase.List(req.Context, userID, createdDate)
+	tasks, err := t.taskUseCase.ListTasks(req.Context(), userID, createdDate)
 	if err != nil {
 		makeJSONResponse(rsp, http.StatusInternalServerError, nil, err)
 		return
@@ -37,5 +35,17 @@ func (t *TaskTransport) List(rsp http.ResponseWriter, req *http.Request) {
 	makeJSONResponse(rsp, http.StatusOK, tasks, nil)
 }
 
-func (t *TaskTransport) Add(rsp http.ResponseWriter, req *http.Request) {
+func (t *TaskTransport) AddTask(rsp http.ResponseWriter, req *http.Request) {
+	t := &storages.Task{}
+	if err := json.NewDecoder(req.Body).Decode(t); err != nil {
+		makeJSONResponse(rsp, http.StatusInternalServerError, nil, err)
+		return
+	}
+	defer req.Body.Close()
+
+	userID, err := getUserIDFromCtx(req.Context())
+	if err != nil {
+		makeJSONResponse(rsp, http.StatusInternalServerError, nil, err)
+		return
+	}
 }

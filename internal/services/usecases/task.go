@@ -11,16 +11,16 @@ type TaskUseCase struct {
 	taskStorage storages.TaskStorage
 }
 
-func (u *TaskUseCase) List(ctx context.Context, userID, createdDate string) ([]*storages.Task, error) {
+func (u *TaskUseCase) ListTasks(ctx context.Context, userID, createdDate string) ([]*storages.Task, error) {
 	tasks, err := u.taskStorage.RetrieveTasks(ctx, userID, createdDate)
 	if err != nil {
-		return nil, fmt.Errorf("task storage failed to retrieve tasks of userid %s createdDate %s: %w", userID, createdDate)
+		return nil, fmt.Errorf("task storage failed to retrieve tasks of userid %s createdDate %s: %w", userID, createdDate, err)
 	}
 
 	return tasks, nil
 }
 
-func (u *TaskUseCase) Add(ctx context.Context, task *storages.Task) (*storages.Task, error) {
+func (u *TaskUseCase) AddTask(ctx context.Context, task *storages.Task) (*storages.Task, error) {
 	// TODO: generate uuid
 
 	// TODO: generate created date

@@ -5,11 +5,6 @@ import (
 	"net/http"
 )
 
-const (
-	dataField  = "data"
-	errorField = "error"
-)
-
 // Make JSON response with data and error (if exist)
 func makeJSONResponse(rsp http.ResponseWriter, statusCode int, data interface{}, err error) {
 	rsp.Header().Set("Content-Type", "application/json")
@@ -19,6 +14,7 @@ func makeJSONResponse(rsp http.ResponseWriter, statusCode int, data interface{},
 		json.NewEncoder(rsp).Encode(map[string]interface{}{
 			errorField: err,
 		})
+		return
 	}
 
 	json.NewEncoder(rsp).Encode(map[string]interface{}{

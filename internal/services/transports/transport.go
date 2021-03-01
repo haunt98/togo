@@ -25,10 +25,10 @@ func (t *Transport) ServeHTTP(rsp http.ResponseWriter, req *http.Request) {
 
 		switch req.Method {
 		case http.MethodGet:
-			t.taskTransport.List(rsp, newReq)
+			t.taskTransport.ListTasks(rsp, newReq)
 			return
 		case http.MethodPost:
-			t.taskTransport.Add(rsp, newReq)
+			t.taskTransport.AddTask(rsp, newReq)
 			return
 		default:
 			// TODO: return unimplement
