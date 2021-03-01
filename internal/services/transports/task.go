@@ -13,6 +13,14 @@ type TaskTransport struct {
 	taskUseCase usecases.TaskUseCase
 }
 
+func NewTaskTransport(
+	taskUseCase usecases.TaskUseCase,
+) *TaskTransport {
+	return &TaskTransport{
+		taskUseCase: taskUseCase,
+	}
+}
+
 func (t *TaskTransport) ListTasks(rsp http.ResponseWriter, req *http.Request) {
 	userID, err := getUserIDFromCtx(req.Context())
 	if err != nil {

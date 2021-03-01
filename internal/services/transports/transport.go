@@ -10,6 +10,16 @@ type Transport struct {
 	userTransport *UserTransport
 }
 
+func NewTransport(
+	taskTransport *TaskTransport,
+	userTransport *UserTransport,
+) *Transport {
+	return &Transport{
+		taskTransport: taskTransport,
+		userTransport: userTransport,
+	}
+}
+
 func (t *Transport) ServeHTTP(rsp http.ResponseWriter, req *http.Request) {
 	log.Println(req.Method, req.URL.Path)
 
