@@ -25,9 +25,18 @@ func NewPostgresDB(db *sql.DB) *PostgresDB {
 }
 
 // RetrieveTasks returns tasks if match userID AND createDate.
-func (p *PostgresDB) RetrieveTasks(ctx context.Context, userID, createdDate sql.NullString) ([]*storages.Task, error) {
+func (p *PostgresDB) RetrieveTasks(ctx context.Context, userID, createdDate string) ([]*storages.Task, error) {
 	query := `SELECT id, content, user_id, created_date FROM tasks WHERE user_id = $1 AND created_date = $2`
-	rows, err := p.db.QueryContext(ctx, query, userID, createdDate)
+	rows, err := p.db.QueryContext(ctx, query,
+		sql.NullString{
+			String: userID,
+			Valid:  true,
+		},
+		sql.NullString{
+			String: createdDate,
+			Valid:  true,
+		},
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -60,9 +69,14 @@ func (p *PostgresDB) AddTask(ctx context.Context, t *storages.Task) error {
 }
 
 // Get user by userID
-func (p *PostgresDB) GetUser(ctx context.Context, userID sql.NullString) (*storages.User, error) {
+func (p *PostgresDB) GetUser(ctx context.Context, userID string) (*storages.User, error) {
 	query := `SELECT id, password, max_todo FROM users WHERE id = $1`
-	row := p.db.QueryRowContext(ctx, query, userID)
+	row := p.db.QueryRowContext(ctx, query,
+		sql.NullString{
+			String: userID,
+			Valid:  true,
+		},
+	)
 
 	user := &storages.User{}
 	if err := row.Scan(&user.ID, &user.Password, &user.MaxTodo); err != nil {

@@ -6,7 +6,6 @@ package mock_storages
 
 import (
 	context "context"
-	sql "database/sql"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -51,7 +50,7 @@ func (mr *MockTaskStorageMockRecorder) AddTask(ctx, t interface{}) *gomock.Call 
 }
 
 // RetrieveTasks mocks base method.
-func (m *MockTaskStorage) RetrieveTasks(ctx context.Context, userID, createdDate sql.NullString) ([]*storages.Task, error) {
+func (m *MockTaskStorage) RetrieveTasks(ctx context.Context, userID, createdDate string) ([]*storages.Task, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RetrieveTasks", ctx, userID, createdDate)
 	ret0, _ := ret[0].([]*storages.Task)
@@ -89,7 +88,7 @@ func (m *MockUserStorage) EXPECT() *MockUserStorageMockRecorder {
 }
 
 // GetUser mocks base method.
-func (m *MockUserStorage) GetUser(ctx context.Context, userID sql.NullString) (*storages.User, error) {
+func (m *MockUserStorage) GetUser(ctx context.Context, userID string) (*storages.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUser", ctx, userID)
 	ret0, _ := ret[0].(*storages.User)

@@ -2,7 +2,6 @@ package usecases
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"fmt"
 
@@ -37,16 +36,7 @@ func NewTaskUseCase(
 }
 
 func (u *TaskUseCase) ListTasks(ctx context.Context, userID, createdDate string) ([]*storages.Task, error) {
-	userIDSql := sql.NullString{
-		String: userID,
-		Valid:  true,
-	}
-	createdDateSql := sql.NullString{
-		String: createdDate,
-		Valid:  true,
-	}
-
-	tasks, err := u.taskStorage.RetrieveTasks(ctx, userIDSql, createdDateSql)
+	tasks, err := u.taskStorage.RetrieveTasks(ctx, userID, createdDate)
 	if err != nil {
 		return nil, fmt.Errorf("task storage failed to retrieve tasks of userid %s createdDate %s: %w", userID, createdDate, err)
 	}
@@ -62,12 +52,7 @@ func (u *TaskUseCase) AddTask(ctx context.Context, userID string, task *storages
 		return nil, err
 	}
 
-	userIDSql := sql.NullString{
-		String: userID,
-		Valid:  true,
-	}
-
-	user, err := u.userStorage.GetUser(ctx, userIDSql)
+	user, err := u.userStorage.GetUser(ctx, userID)
 	if err != nil {
 		return nil, err
 	}

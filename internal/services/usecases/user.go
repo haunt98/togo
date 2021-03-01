@@ -2,7 +2,6 @@ package usecases
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 
 	"github.com/haunt98/togo/internal/storages"
@@ -21,12 +20,7 @@ func NewUserUseCase(
 }
 
 func (u *UserUseCase) Validate(ctx context.Context, userID, pwd string) (bool, error) {
-	userIDSql := sql.NullString{
-		String: userID,
-		Valid:  true,
-	}
-
-	user, err := u.userStorage.GetUser(ctx, userIDSql)
+	user, err := u.userStorage.GetUser(ctx, userID)
 	if err != nil {
 		return false, fmt.Errorf("user storage failed to get user: %w", err)
 	}

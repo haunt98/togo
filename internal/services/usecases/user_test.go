@@ -2,7 +2,6 @@ package usecases
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"testing"
 
@@ -14,9 +13,9 @@ import (
 
 func TestUserUseCaseValidate(t *testing.T) {
 	type mockGetUser struct {
-		userIDSql sql.NullString
-		mockUser  *storages.User
-		mockErr   error
+		userID   string
+		mockUser *storages.User
+		mockErr  error
 	}
 
 	tests := []struct {
@@ -32,15 +31,13 @@ func TestUserUseCaseValidate(t *testing.T) {
 			userID: "abc",
 			pwd:    "123",
 			mockGetUser: mockGetUser{
-				userIDSql: sql.NullString{
-					String: "abc",
-					Valid:  true,
-				},
+				userID: "abc",
 				mockUser: &storages.User{
 					ID:       "abc",
 					Password: "123",
 					MaxTodo:  5,
 				},
+				mockErr: nil,
 			},
 			wantResult: true,
 		},
@@ -49,15 +46,13 @@ func TestUserUseCaseValidate(t *testing.T) {
 			userID: "abc",
 			pwd:    "123",
 			mockGetUser: mockGetUser{
-				userIDSql: sql.NullString{
-					String: "abc",
-					Valid:  true,
-				},
+				userID: "abc",
 				mockUser: &storages.User{
 					ID:       "abc",
 					Password: "456",
 					MaxTodo:  5,
 				},
+				mockErr: nil,
 			},
 			wantResult: false,
 		},
@@ -66,10 +61,7 @@ func TestUserUseCaseValidate(t *testing.T) {
 			userID: "abc",
 			pwd:    "123",
 			mockGetUser: mockGetUser{
-				userIDSql: sql.NullString{
-					String: "abc",
-					Valid:  true,
-				},
+				userID:  "abc",
 				mockErr: errors.New("storage failed"),
 			},
 			wantResult: false,
@@ -83,7 +75,7 @@ func TestUserUseCaseValidate(t *testing.T) {
 			defer ctrl.Finish()
 
 			userStorage := mock_storages.NewMockUserStorage(ctrl)
-			userStorage.EXPECT().GetUser(gomock.Any(), tc.mockGetUser.userIDSql).
+			userStorage.EXPECT().GetUser(gomock.Any(), tc.mockGetUser.userID).
 				Return(tc.mockGetUser.mockUser, tc.mockGetUser.mockErr)
 
 			userUseCase := NewUserUseCase(userStorage)
