@@ -1,0 +1,6 @@
+service:
+  port: 8080
+
+database:
+  dialect: postgres
+  connection: postgres://postgres:1234@localhost/togodb
