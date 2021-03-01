@@ -5,6 +5,8 @@ import (
 	"database/sql"
 )
 
+//go:generate mockgen -source=storage.go -destination=gomock/storage.go
+
 type TaskStorage interface {
 	RetrieveTasks(ctx context.Context, userID, createdDate sql.NullString) ([]*Task, error)
 	AddTask(ctx context.Context, t *Task) error
