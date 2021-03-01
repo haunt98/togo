@@ -16,6 +16,18 @@ type TaskUseCase struct {
 	nowFn          clock.NowFn
 }
 
+func NewTaskUseCase(
+	taskStorage storages.TaskStorage,
+	uuidGenerateFn uuid.GenerateFn,
+	nowFn clock.NowFn,
+) *TaskUseCase {
+	return &TaskUseCase{
+		taskStorage:    taskStorage,
+		uuidGenerateFn: uuid.Generate,
+		nowFn:          clock.Now,
+	}
+}
+
 func (u *TaskUseCase) ListTasks(ctx context.Context, userID, createdDate string) ([]*storages.Task, error) {
 	userIDSql := sql.NullString{
 		String: userID,
