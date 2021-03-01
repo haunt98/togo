@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -50,6 +51,17 @@ func TestTaskUseCaseListTasks(t *testing.T) {
 					Content: "def",
 				},
 			},
+		},
+		{
+			name:        "database failed",
+			userID:      "abc",
+			createdDate: "2020-03-01",
+			mockRetriveTasks: mockRetriveTasks{
+				userID:      "abc",
+				createdDate: "2020-03-01",
+				mockErr:     errors.New("database failed"),
+			},
+			wantErr: errors.New("task storage failed to retrieve tasks of userid abc createdDate 2020-03-01: database failed"),
 		},
 	}
 
