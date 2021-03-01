@@ -12,6 +12,7 @@ const (
 )
 
 var _ storages.TaskStorage = (*PostgresDB)(nil)
+var _ storages.UserStorage = (*PostgresDB)(nil)
 
 type PostgresDB struct {
 	db *sql.DB
@@ -58,15 +59,15 @@ func (p *PostgresDB) AddTask(ctx context.Context, t *storages.Task) error {
 	return nil
 }
 
-// ValidateUser returns tasks if match userID AND password
-func (p *PostgresDB) ValidateUser(ctx context.Context, userID, pwd sql.NullString) (bool, error) {
-	query := `SELECT id FROM users WHERE id = $1 AND password = $2`
-	row := p.db.QueryRowContext(ctx, query, userID, pwd)
+// Get user by userID
+func (p *PostgresDB) GetUser(ctx context.Context, userID sql.NullString) (*storages.User, error) {
+	query := `SELECT id, password, max_todo FROM users WHERE id = $1`
+	row := p.db.QueryRowContext(ctx, query, userID)
 
-	u := &storages.User{}
-	if err := row.Scan(&u.ID); err != nil {
-		return false, err
+	user := &storages.User{}
+	if err := row.Scan(&user.ID, &user.Password, &user.MaxTodo); err != nil {
+		return nil, err
 	}
 
-	return true, nil
+	return user, nil
 }

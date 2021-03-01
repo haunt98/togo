@@ -11,5 +11,5 @@ type TaskStorage interface {
 }
 
 type UserStorage interface {
-	ValidateUser(ctx context.Context, userID, pwd sql.NullString) (bool, error)
+	GetUser(ctx context.Context, userID sql.NullString) (*User, error)
 }

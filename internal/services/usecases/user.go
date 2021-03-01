@@ -25,15 +25,15 @@ func (u *UserUseCase) Validate(ctx context.Context, userID, pwd string) (bool, e
 		String: userID,
 		Valid:  true,
 	}
-	pwdSql := sql.NullString{
-		String: pwd,
-		Valid:  true,
-	}
 
-	valid, err := u.userStorage.ValidateUser(ctx, userIDSql, pwdSql)
+	user, err := u.userStorage.GetUser(ctx, userIDSql)
 	if err != nil {
-		return false, fmt.Errorf("user storage failed to validate: %w", err)
+		return false, fmt.Errorf("user storage failed to get user: %w", err)
 	}
 
-	return valid, nil
+	if pwd != user.Password {
+		return false, nil
+	}
+
+	return true, nil
 }

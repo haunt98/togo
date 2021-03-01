@@ -3,6 +3,7 @@ package usecases
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 
 	"github.com/haunt98/togo/internal/pkg/clock"
@@ -10,19 +11,26 @@ import (
 	"github.com/haunt98/togo/internal/storages"
 )
 
+var (
+	UserReachTaskLimitError = errors.New("user reach task limit error")
+)
+
 type TaskUseCase struct {
 	taskStorage    storages.TaskStorage
+	userStorage    storages.UserStorage
 	uuidGenerateFn uuid.GenerateFn
 	nowFn          clock.NowFn
 }
 
 func NewTaskUseCase(
 	taskStorage storages.TaskStorage,
+	userStorage storages.UserStorage,
 	uuidGenerateFn uuid.GenerateFn,
 	nowFn clock.NowFn,
 ) *TaskUseCase {
 	return &TaskUseCase{
 		taskStorage:    taskStorage,
+		userStorage:    userStorage,
 		uuidGenerateFn: uuidGenerateFn,
 		nowFn:          nowFn,
 	}
@@ -47,6 +55,28 @@ func (u *TaskUseCase) ListTasks(ctx context.Context, userID, createdDate string)
 }
 
 func (u *TaskUseCase) AddTask(ctx context.Context, userID string, task *storages.Task) (*storages.Task, error) {
+	nowInDate := u.nowFn().Format(clock.DateFormat)
+
+	tasks, err := u.ListTasks(ctx, userID, nowInDate)
+	if err != nil {
+		return nil, err
+	}
+
+	userIDSql := sql.NullString{
+		String: userID,
+		Valid:  true,
+	}
+
+	user, err := u.userStorage.GetUser(ctx, userIDSql)
+	if err != nil {
+		return nil, err
+	}
+
+	// Check limit
+	if len(tasks) > user.MaxTodo {
+		return nil, UserReachTaskLimitError
+	}
+
 	// Update task
 	// Skip userID in task
 	task.UserID = userID

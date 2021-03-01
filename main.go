@@ -84,7 +84,7 @@ func initUseCase(
 	taskStorage storages.TaskStorage,
 	userStorage storages.UserStorage,
 ) (*usecases.TaskUseCase, *usecases.UserUseCase) {
-	taskUseCase := usecases.NewTaskUseCase(taskStorage, uuid.Generate, clock.Now)
+	taskUseCase := usecases.NewTaskUseCase(taskStorage, userStorage, uuid.Generate, clock.Now)
 	userUseCase := usecases.NewUserUseCase(userStorage)
 	return taskUseCase, userUseCase
 }
