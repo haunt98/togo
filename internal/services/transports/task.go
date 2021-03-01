@@ -10,11 +10,11 @@ import (
 )
 
 type TaskTransport struct {
-	taskUseCase usecases.TaskUseCase
+	taskUseCase *usecases.TaskUseCase
 }
 
 func NewTaskTransport(
-	taskUseCase usecases.TaskUseCase,
+	taskUseCase *usecases.TaskUseCase,
 ) *TaskTransport {
 	return &TaskTransport{
 		taskUseCase: taskUseCase,

@@ -16,8 +16,18 @@ var (
 )
 
 type UserTransport struct {
-	userUseCase    usecases.UserUseCase
+	userUseCase    *usecases.UserUseCase
 	tokenGenerator token.Generator
+}
+
+func NewUserTransport(
+	userUseCase *usecases.UserUseCase,
+	tokenGenerator token.Generator,
+) *UserTransport {
+	return &UserTransport{
+		userUseCase:    userUseCase,
+		tokenGenerator: tokenGenerator,
+	}
 }
 
 // Validate userID/password and create token

@@ -23,8 +23,8 @@ func NewTaskUseCase(
 ) *TaskUseCase {
 	return &TaskUseCase{
 		taskStorage:    taskStorage,
-		uuidGenerateFn: uuid.Generate,
-		nowFn:          clock.Now,
+		uuidGenerateFn: uuidGenerateFn,
+		nowFn:          nowFn,
 	}
 }
 
