@@ -1,6 +1,9 @@
 service:
-  port: 8080
+  port: 5050
 
 database:
   dialect: postgres
   connection: postgres://postgres:1234@localhost/togodb
+
+jwt:
+  key: abcdef

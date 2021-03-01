@@ -12,6 +12,7 @@ import (
 	"github.com/haunt98/togo/internal/services/usecases"
 	"github.com/haunt98/togo/internal/storages"
 	"github.com/haunt98/togo/internal/token/jwt"
+	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/spf13/viper"
 )
@@ -33,9 +34,16 @@ func main() {
 	taskUseCase := usecases.NewTaskUseCase(taskStorage, uuid.Generate, clock.Now)
 	userUseCase := usecases.NewUserUseCase(userStorage)
 
+	// Init JWT
+	jwtKey := viper.GetString("jwt.key")
+	if jwtKey == "" {
+		log.Fatal("invalid jwt.key")
+	}
+	jwtGenerator := jwt.NewGenerator(jwtKey)
+
 	// Transport layer
 	taskTransport := transports.NewTaskTransport(taskUseCase)
-	userTransport := transports.NewUserTransport(userUseCase, jwt.NewGenerator("wqGyEBBfPK9w3Lxw"))
+	userTransport := transports.NewUserTransport(userUseCase, jwtGenerator)
 	transport := transports.NewTransport(taskTransport, userTransport)
 
 	port := viper.GetInt("service.port")
