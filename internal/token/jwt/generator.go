@@ -18,11 +18,17 @@ var (
 	TokenNotValidError = errors.New("token not valid")
 )
 
+var _ token.Generator = (*JWTGenerator)(nil)
+
 type JWTGenerator struct {
 	key string
 }
 
-var _ token.Generator = (*JWTGenerator)(nil)
+func NewGenerator(key string) *JWTGenerator {
+	return &JWTGenerator{
+		key: key,
+	}
+}
 
 // Create token from userID
 func (g *JWTGenerator) CreateToken(userID string) (string, error) {
