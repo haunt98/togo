@@ -49,5 +49,12 @@ func (t *TaskTransport) AddTask(rsp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	t.taskUseCase.AddTask()
+	// TODO depend on error
+	task, err = t.taskUseCase.AddTask(req.Context(), userID, task)
+	if err != nil {
+		makeJSONResponse(rsp, http.StatusInternalServerError, nil, err)
+		return
+	}
+
+	makeJSONResponse(rsp, http.StatusOK, task, nil)
 }
