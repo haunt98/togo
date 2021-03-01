@@ -3,6 +3,7 @@ package usecases
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"github.com/haunt98/togo/internal/storages"
 )
@@ -19,7 +20,7 @@ func NewUserUseCase(
 	}
 }
 
-func (u *UserUseCase) Validate(ctx context.Context, userID, pwd string) bool {
+func (u *UserUseCase) Validate(ctx context.Context, userID, pwd string) (bool, error) {
 	userIDSql := sql.NullString{
 		String: userID,
 		Valid:  true,
@@ -29,5 +30,10 @@ func (u *UserUseCase) Validate(ctx context.Context, userID, pwd string) bool {
 		Valid:  true,
 	}
 
-	return u.userStorage.ValidateUser(ctx, userIDSql, pwdSql)
+	valid, err := u.userStorage.ValidateUser(ctx, userIDSql, pwdSql)
+	if err != nil {
+		return false, fmt.Errorf("user storage failed to validate: %w", err)
+	}
+
+	return valid, nil
 }

@@ -39,7 +39,12 @@ func (t *UserTransport) Login(rsp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	isValid := t.userUseCase.Validate(req.Context(), userID, password)
+	isValid, err := t.userUseCase.Validate(req.Context(), userID, password)
+	if err != nil {
+		log.Printf("user use case failed to validate: %s", err)
+		makeJSONResponse(rsp, http.StatusUnauthorized, nil, incorrectLoginError)
+		return
+	}
 	if !isValid {
 		makeJSONResponse(rsp, http.StatusUnauthorized, nil, incorrectLoginError)
 		return
