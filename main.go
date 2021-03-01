@@ -67,7 +67,11 @@ func initDatabase() *sql.DB {
 
 	db, err := sql.Open(dialect, connectionStr)
 	if err != nil {
-		log.Fatal("failed to open database", err)
+		log.Fatalf("failed to open database: %s", err)
+	}
+
+	if err := db.Ping(); err != nil {
+		log.Fatalf("failed to ping database: %s", err)
 	}
 
 	return db
