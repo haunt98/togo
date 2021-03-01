@@ -20,8 +20,14 @@ func NewUserUseCase(
 }
 
 func (u *UserUseCase) Validate(ctx context.Context, userID, pwd string) bool {
-	userIDSql := sql.NullString{}
-	pwdSql := sql.NullString{}
+	userIDSql := sql.NullString{
+		String: userID,
+		Valid:  true,
+	}
+	pwdSql := sql.NullString{
+		String: pwd,
+		Valid:  true,
+	}
 
 	return u.userStorage.ValidateUser(ctx, userIDSql, pwdSql)
 }
