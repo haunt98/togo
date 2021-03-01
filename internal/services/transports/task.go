@@ -36,8 +36,8 @@ func (t *TaskTransport) ListTasks(rsp http.ResponseWriter, req *http.Request) {
 }
 
 func (t *TaskTransport) AddTask(rsp http.ResponseWriter, req *http.Request) {
-	t := &storages.Task{}
-	if err := json.NewDecoder(req.Body).Decode(t); err != nil {
+	task := &storages.Task{}
+	if err := json.NewDecoder(req.Body).Decode(task); err != nil {
 		makeJSONResponse(rsp, http.StatusInternalServerError, nil, err)
 		return
 	}
@@ -48,4 +48,6 @@ func (t *TaskTransport) AddTask(rsp http.ResponseWriter, req *http.Request) {
 		makeJSONResponse(rsp, http.StatusInternalServerError, nil, err)
 		return
 	}
+
+	t.taskUseCase.AddTask()
 }

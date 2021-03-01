@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/haunt98/togo/internal/storages"
 )
@@ -11,11 +12,10 @@ type UserUseCase struct {
 }
 
 func (u *UserUseCase) Validate(ctx context.Context, userID, pwd string) bool {
-	if userID == "" || pwd == "" {
-		return false
-	}
+	userIDSql := sql.NullString{}
+	pwdSql := sql.NullString{}
 
-	return u.userStorage.ValidateUser(ctx, userID, pwd)
+	return u.userStorage.ValidateUser(ctx, userIDSql, pwdSql)
 }
 
 func (u *UserUseCase) CreateToken() (string, error) {

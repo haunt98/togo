@@ -2,17 +2,31 @@ package usecases
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 
+	"github.com/haunt98/togo/internal/pkg/clock"
+	"github.com/haunt98/togo/internal/pkg/uuid"
 	"github.com/haunt98/togo/internal/storages"
 )
 
 type TaskUseCase struct {
-	taskStorage storages.TaskStorage
+	taskStorage    storages.TaskStorage
+	uuidGenerateFn uuid.GenerateFn
+	nowFn          clock.NowFn
 }
 
 func (u *TaskUseCase) ListTasks(ctx context.Context, userID, createdDate string) ([]*storages.Task, error) {
-	tasks, err := u.taskStorage.RetrieveTasks(ctx, userID, createdDate)
+	userIDSql := sql.NullString{
+		String: userID,
+		Valid:  true,
+	}
+	createdDateSql := sql.NullString{
+		String: createdDate,
+		Valid:  true,
+	}
+
+	tasks, err := u.taskStorage.RetrieveTasks(ctx, userIDSql, createdDateSql)
 	if err != nil {
 		return nil, fmt.Errorf("task storage failed to retrieve tasks of userid %s createdDate %s: %w", userID, createdDate, err)
 	}
@@ -20,10 +34,12 @@ func (u *TaskUseCase) ListTasks(ctx context.Context, userID, createdDate string)
 	return tasks, nil
 }
 
-func (u *TaskUseCase) AddTask(ctx context.Context, task *storages.Task) (*storages.Task, error) {
-	// TODO: generate uuid
-
-	// TODO: generate created date
+func (u *TaskUseCase) AddTask(ctx context.Context, userID string, task *storages.Task) (*storages.Task, error) {
+	// Update task
+	// Skip userID in task
+	task.UserID = userID
+	task.ID = u.uuidGenerateFn()
+	task.CreatedDate = u.nowFn().Format(clock.DateFormat)
 
 	if err := u.taskStorage.AddTask(ctx, task); err != nil {
 		return nil, fmt.Errorf("task storage failed to add: %w", err)
