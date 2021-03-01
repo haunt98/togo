@@ -75,6 +75,7 @@ func (t *UserTransport) ValidateToken(rsp http.ResponseWriter, req *http.Request
 	}
 
 	// Inject userID to ctx
+	//nolint:staticcheck
 	req = req.WithContext(context.WithValue(req.Context(), userIDField, userID))
 	return req, true
 }

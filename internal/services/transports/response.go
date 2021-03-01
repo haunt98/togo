@@ -2,6 +2,7 @@ package transports
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -11,13 +12,17 @@ func makeJSONResponse(rsp http.ResponseWriter, statusCode int, data interface{},
 	rsp.WriteHeader(statusCode)
 
 	if err != nil {
-		json.NewEncoder(rsp).Encode(map[string]interface{}{
+		if jsonErr := json.NewEncoder(rsp).Encode(map[string]interface{}{
 			errorField: err.Error(),
-		})
+		}); jsonErr != nil {
+			log.Printf("failed to encode json: %s", jsonErr)
+		}
 		return
 	}
 
-	json.NewEncoder(rsp).Encode(map[string]interface{}{
+	if jsonErr := json.NewEncoder(rsp).Encode(map[string]interface{}{
 		dataField: data,
-	})
+	}); jsonErr != nil {
+		log.Printf("failed to encode json: %s", jsonErr)
+	}
 }

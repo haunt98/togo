@@ -40,7 +40,10 @@ func main() {
 		log.Fatal("invalid service.port")
 	}
 	log.Printf("running with port %d", port)
-	http.ListenAndServe(fmt.Sprintf(":%d", port), transport)
+
+	if err := http.ListenAndServe(fmt.Sprintf(":%d", port), transport); err != nil {
+		log.Fatalf("failed to start service: %s", err)
+	}
 }
 
 func initStorage() (storages.TaskStorage, storages.UserStorage) {
