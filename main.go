@@ -12,6 +12,7 @@ import (
 	"github.com/haunt98/togo/internal/services/usecases"
 	"github.com/haunt98/togo/internal/storages"
 	"github.com/haunt98/togo/internal/storages/postgres"
+	"github.com/haunt98/togo/internal/storages/sqlite"
 	"github.com/haunt98/togo/internal/token/jwt"
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
@@ -20,6 +21,7 @@ import (
 
 const (
 	postgresDialect = "postgres"
+	sqliteDialect   = "sqlite"
 )
 
 func main() {
@@ -73,6 +75,9 @@ func initStorage() (storages.TaskStorage, storages.UserStorage) {
 	case postgresDialect:
 		taskStorage = postgres.NewPostgresDB(db)
 		userStorage = postgres.NewPostgresDB(db)
+	case sqliteDialect:
+		taskStorage = sqlite.NewSQLiteDB(db)
+		userStorage = sqlite.NewSQLiteDB(db)
 	default:
 		log.Fatalf("unsupport dialect %s", dialect)
 	}
