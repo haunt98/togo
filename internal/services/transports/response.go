@@ -12,7 +12,7 @@ func makeJSONResponse(rsp http.ResponseWriter, statusCode int, data interface{},
 
 	if err != nil {
 		json.NewEncoder(rsp).Encode(map[string]interface{}{
-			errorField: err,
+			errorField: err.Error(),
 		})
 		return
 	}
