@@ -8,6 +8,7 @@ CREATE TABLE users (
 );
 
 INSERT INTO users (id, password, max_todo) VALUES('firstUser', 'example', 5);
+INSERT INTO users (id, password, max_todo) VALUES('abc', 'pwd', 1);
 
 -- tasks definition
 
@@ -19,3 +20,5 @@ CREATE TABLE tasks (
 	CONSTRAINT tasks_PK PRIMARY KEY (id),
 	CONSTRAINT tasks_FK FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+INSERT INTO tasks (id, content, user_id, created_date) VALUES('1', 'content1', 'abc', '2020-03-02');
