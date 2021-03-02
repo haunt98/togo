@@ -179,6 +179,39 @@ func TestTaskUseCaseAddTask(t *testing.T) {
 			mockUUIDGenerateFn: func() string { return "taskid" },
 			wantErr:            errors.New("task storage failed to retrieve tasks of userid abc createdDate 2020-03-02: database failed"),
 		},
+		{
+			name:   "reach limit",
+			userID: "abc",
+			task: &storages.Task{
+				Content: "content",
+			},
+			mockRetriveTasks: mockRetriveTasks{
+				userID:      "abc",
+				createdDate: "2020-03-02",
+				mockTasks: []*storages.Task{
+					{
+						Content: "content 1",
+					},
+					{
+						Content: "content 2",
+					},
+				},
+			},
+			mockGetUser: mockGetUser{
+				enable: true,
+				userID: "abc",
+				mockUser: &storages.User{
+					ID:      "abc",
+					MaxTodo: 2,
+				},
+			},
+			mockAddTask: mockAddTask{
+				enable: false,
+			},
+			mockNowFn:          func() time.Time { return time.Date(2020, 3, 2, 0, 0, 0, 0, time.UTC) },
+			mockUUIDGenerateFn: func() string { return "taskid" },
+			wantErr:            UserReachTaskLimitError,
+		},
 	}
 
 	for _, tc := range tests {
