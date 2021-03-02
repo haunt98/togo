@@ -89,3 +89,5 @@ Run:
 ```sh
 make run
 ```
+
+If you want to switch back to sqlite, just change config in `configs/config.yaml`.
