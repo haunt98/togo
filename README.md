@@ -64,9 +64,9 @@ CREATE TABLE tasks (
 
 ![auth and create tasks request](https://github.com/manabie-com/togo/blob/master/docs/sequence.svg)
 
-### Running
+### Guide
 
-Run test:
+Run unittest:
 
 ```sh
 make test
