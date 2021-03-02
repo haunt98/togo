@@ -57,9 +57,13 @@ func (t *TaskTransport) AddTask(rsp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// TODO depend on error
 	task, err = t.taskUseCase.AddTask(req.Context(), userID, task)
 	if err != nil {
+		if err == usecases.UserReachTaskLimitError {
+			makeJSONResponse(rsp, http.StatusForbidden, nil, err)
+			return
+		}
+
 		makeJSONResponse(rsp, http.StatusInternalServerError, nil, err)
 		return
 	}
