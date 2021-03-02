@@ -103,3 +103,13 @@ make docker_down
 ```
 
 If you want to switch back to sqlite, just change config in `configs/config.yaml`.
+
+### Structure
+
+Storages layer is in `internal/storages` which have 2 drivers: postgres and sqlite to interact with database,
+no business is stored in this layer.
+
+Use case layer is in `internal/services/usecases` which contains storage layer and core business.
+
+Transports layer is in `internal/services/transports` to handle HTTP routing and make JSON response for client,
+no business is stored in this layer too.
