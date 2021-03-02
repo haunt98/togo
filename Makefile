@@ -1,19 +1,22 @@
-.PHONY: help test lint
+.PHONY: help unittest lint run docker_up docker_down integration_test
 
 help:
-	@echo make unittest
-	@echo make lint
-	@echo make run
+	@echo read Makefile
 
 unittest:
 	go test ./...
-
-integration_test:
-	docker-compose up -d
-	go test -tags=integration ./...
 
 lint:
 	golangci-lint run ./...
 
 run:
 	go run *.go
+
+docker_up:
+	docker-compose up -d
+
+docker_down:
+	docker-compose down
+
+integration_test:
+	go test -tags=integration ./...

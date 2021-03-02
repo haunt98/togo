@@ -69,7 +69,7 @@ CREATE TABLE tasks (
 Run unittest:
 
 ```sh
-make test
+make unittest
 ```
 
 Check lint:
@@ -78,16 +78,28 @@ Check lint:
 make lint
 ```
 
-Before running, bring postgres online:
+Before running or integration test, bring postgres online:
 
 ```sh
-docker-compose up
+make docker_up
 ```
 
 Run:
 
 ```sh
 make run
+```
+
+Integration test:
+
+```sh
+make integration_test
+```
+
+After everything done, bring postgres offline:
+
+```sh
+make docker_down
 ```
 
 If you want to switch back to sqlite, just change config in `configs/config.yaml`.

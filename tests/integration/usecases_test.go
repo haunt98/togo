@@ -3,12 +3,15 @@
 package integration
 
 import (
+	"context"
 	"database/sql"
+	"log"
 	"testing"
 	"time"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/golang-migrate/migrate/v4/source/github"
 	"github.com/haunt98/togo/internal/services/usecases"
 	"github.com/haunt98/togo/internal/storages/postgres"
@@ -46,7 +49,9 @@ func (s *usecasesTestSuite) SetupSuite() {
 	db, err := sql.Open(dialect, connectionStr)
 	s.NoError(err)
 
+	log.Println(connectionStr)
 	migration, err := migrate.New("file://migrations", connectionStr)
+	log.Println(err)
 	s.NoError(err)
 	s.migration = migration
 
@@ -68,4 +73,18 @@ func (s *usecasesTestSuite) SetupTest() {
 func (s *usecasesTestSuite) TearDownTest() {
 	err := s.migration.Down()
 	s.NoError(err)
+}
+
+func (s *usecasesTestSuite) TestUserValidate() {
+	valid, err := s.userUseCase.Validate(context.Background(), "firstUser", "example")
+	s.NoError(err)
+	s.True(valid)
+
+	valid, err = s.userUseCase.Validate(context.Background(), "firstUser", "bla")
+	s.NoError(err)
+	s.False(valid)
+
+	valid, err = s.userUseCase.Validate(context.Background(), "bla", "bla")
+	s.NoError(err)
+	s.False(valid)
 }

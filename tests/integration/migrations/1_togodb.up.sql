@@ -1,9 +1,3 @@
--- make sure to drop before do anything
-
-DROP TABLE tasks;
-
-DROP TABLE users;
-
 -- users definition
 
 CREATE TABLE users (
