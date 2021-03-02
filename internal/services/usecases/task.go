@@ -58,7 +58,7 @@ func (u *TaskUseCase) AddTask(ctx context.Context, userID string, task *storages
 	}
 
 	// Check limit
-	if len(tasks) > user.MaxTodo {
+	if len(tasks) >= user.MaxTodo {
 		return nil, UserReachTaskLimitError
 	}
 
