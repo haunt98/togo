@@ -1,0 +1,3 @@
+database:
+  dialect: postgres
+  connection: "user=postgres password=1234 dbname=togodb sslmode=disable"

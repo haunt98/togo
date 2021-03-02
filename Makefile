@@ -1,12 +1,16 @@
 .PHONY: help test lint
 
 help:
-	@echo make test: testing
-	@echo make lint: linting
-	@echo make run: running
+	@echo make unittest
+	@echo make lint
+	@echo make run
 
-test:
+unittest:
 	go test ./...
+
+integration_test:
+	docker-compose up -d
+	go test -tags=integration ./...
 
 lint:
 	golangci-lint run ./...
