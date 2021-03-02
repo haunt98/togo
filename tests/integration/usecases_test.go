@@ -30,7 +30,7 @@ func TestUsecasesTestSuite(t *testing.T) {
 	suite.Run(t, &usecasesTestSuite{})
 }
 
-func (s *usecasesTestSuite) SetupSuide() {
+func (s *usecasesTestSuite) SetupSuite() {
 	// Init configs
 	viper.SetConfigName("integration")
 	viper.AddConfigPath("./configs")
@@ -46,7 +46,7 @@ func (s *usecasesTestSuite) SetupSuide() {
 	db, err := sql.Open(dialect, connectionStr)
 	s.NoError(err)
 
-	migration, err := migrate.New("file://scripts", connectionStr)
+	migration, err := migrate.New("file://migrations", connectionStr)
 	s.NoError(err)
 	s.migration = migration
 
